@@ -8,12 +8,12 @@
         <version>2.6.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>ru.javaops.bootjava</groupId>
+    <groupId>com.github.MoonlightDreamer</groupId>
     <artifactId>restaurant-voting</artifactId>
     <version>1.0</version>
     <name>restaurant-voting</name>
-    <description>Spring Boot 2.x HATEOAS application (BootJava)</description>
-    <url>https://javaops.ru/view/bootjava</url>
+    <description>Restaurant Voting Application</description>
+    <url>github.com/MoonlightDreamer/rest-voting</url>
 
     <properties>
         <java.version>17</java.version>

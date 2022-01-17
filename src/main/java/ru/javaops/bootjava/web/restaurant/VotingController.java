@@ -43,9 +43,9 @@ public class VotingController {
         return MealsUtil.createMenus(meals);
     }
 
-    @PostMapping(value = "/{restaurantId}")
+    @PostMapping
     public Vote vote(@AuthenticationPrincipal AuthUser authUser,
-                     @PathVariable("restaurantId") int restaurantId) {
+                     @RequestParam int restaurantId) {
         User user = authUser.getUser();
         Restaurant restaurant = restaurantRepository.getById(restaurantId);
         LocalDateTime lastUserVoteTime = votingRepository.getLastVoteTime(user.getId());
@@ -57,4 +57,10 @@ public class VotingController {
         }
     }
 
+    @PatchMapping
+    @Transactional
+    public void changeVote(@AuthenticationPrincipal AuthUser authUser,
+                           @RequestParam int restaurantId) {
+
+    }
 }
