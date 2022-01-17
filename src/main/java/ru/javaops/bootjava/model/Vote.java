@@ -28,9 +28,8 @@ public class Vote extends BaseEntity {
     @JoinColumn(name="restaurant_id", nullable = false)
     private Restaurant restaurant;
 
-    @NotNull
     @Column(name="votedate", columnDefinition = "timestamp default now()", nullable = false)
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @NotNull
     private LocalDateTime voteDate;
 
     @NotNull

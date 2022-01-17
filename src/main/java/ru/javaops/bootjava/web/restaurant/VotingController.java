@@ -6,7 +6,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import ru.javaops.bootjava.error.IllegalRequestDataException;
 import ru.javaops.bootjava.model.Meal;
+import ru.javaops.bootjava.model.Restaurant;
 import ru.javaops.bootjava.model.User;
 import ru.javaops.bootjava.model.Vote;
 import ru.javaops.bootjava.repository.MenuRepository;
@@ -15,6 +17,7 @@ import ru.javaops.bootjava.repository.VotingRepository;
 import ru.javaops.bootjava.util.MealsUtil;
 import ru.javaops.bootjava.web.AuthUser;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -40,10 +43,18 @@ public class VotingController {
         return MealsUtil.createMenus(meals);
     }
 
-    @GetMapping(value = "/{restaurantId}")
-    public Vote vote() {
-        Vote lastVote = votingRepository.getLastVote(1);
-        return lastVote;
+    @PostMapping(value = "/{restaurantId}")
+    public Vote vote(@AuthenticationPrincipal AuthUser authUser,
+                     @PathVariable("restaurantId") int restaurantId) {
+        User user = authUser.getUser();
+        Restaurant restaurant = restaurantRepository.getById(restaurantId);
+        LocalDateTime lastUserVoteTime = votingRepository.getLastVoteTime(user.getId());
+        LocalDateTime currentUserVoteTime = LocalDateTime.now();
+        if(lastUserVoteTime.toLocalDate().isEqual(currentUserVoteTime.toLocalDate())) {
+            throw new IllegalRequestDataException("User has already voted today");
+        } else {
+            return votingRepository.save(new Vote(restaurant, currentUserVoteTime, user));
+        }
     }
 
 }
