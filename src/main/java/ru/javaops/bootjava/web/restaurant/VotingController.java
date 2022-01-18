@@ -17,7 +17,9 @@ import ru.javaops.bootjava.repository.VotingRepository;
 import ru.javaops.bootjava.util.MealsUtil;
 import ru.javaops.bootjava.web.AuthUser;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -57,10 +59,16 @@ public class VotingController {
         }
     }
 
-    @PatchMapping
+    @PatchMapping("/{voteId}")
     @Transactional
-    public void changeVote(@AuthenticationPrincipal AuthUser authUser,
+    public void changeVote(@PathVariable int voteId,
                            @RequestParam int restaurantId) {
-
+        Vote vote = votingRepository.findById(voteId).orElse(null);
+        if(vote == null ||
+                (vote.getVoteDate().toLocalDate().isEqual(LocalDate.now())
+                && vote.getVoteDate().toLocalTime().isAfter(LocalTime.of(11, 0)))) {
+            throw new IllegalRequestDataException("User can not change his vote already");
+        }
+        else vote.setRestaurant(restaurantRepository.getById(restaurantId));
     }
 }
